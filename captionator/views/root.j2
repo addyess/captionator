@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Captionator{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="bg-light p-5">
+            <h1> Captionator </h1>
+        </div>
+        <div class="row">
+            <div class="col-4">ID</div>
+            <div class="col-8">Caption Name</div>
+        </div>
+        {% for caption in available_captions %}
+        <div class=row>
+            <div class="col-4">{{ caption.uuid }}</div>
+            <div class="col-8">{{ caption.name }}</div>
+        </div>
+        <div class=row/>
+        {% endfor %}
+        <div class="row">
+            <div class="col-4">
+                <a href="/add_captions">Add Captions</a>
+            </div>
+            <div class="col-4">
+                <a href="/edit_captions">Edit Captions</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
