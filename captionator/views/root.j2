@@ -4,27 +4,36 @@
     {{ super() }}
 {% endblock %}
 {% block content %}
-    <div class="container">
+    <div class="container" >
         <div class="bg-light p-5">
             <h1> Captionator </h1>
         </div>
-        <div class="row">
-            <div class="col-4">ID</div>
-            <div class="col-8">Caption Name</div>
-        </div>
-        {% for caption in available_captions %}
-        <div class=row>
-            <div class="col-4">{{ caption.uuid }}</div>
-            <div class="col-8">{{ caption.name }}</div>
-        </div>
-        <div class=row/>
-        {% endfor %}
-        <div class="row">
-            <div class="col-4">
-                <a href="/add_captions">Add Captions</a>
+        <div class="row" id="captions">
+            <div>
+                <div>
+                    <table
+                      data-toggle="table" data-pagination="true" data-search="true"
+                      data-click-to-select="true"
+                      data-url="/captions.json"
+                    >
+                      <thead>
+                        <tr>
+                          <th data-field="state"  data-checkbox="true"></th>
+                          <th data-sortable="true" data-field="id">#</th>
+                          <th data-sortable="true" data-field="name">Title</th>
+                          <th data-sortable="true" data-field="location">Location</th>
+                        </tr>
+                      </thead>
+                      </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="col-4">
-                <a href="/edit_captions">Edit Captions</a>
+        </div>
+
+        <div>
+            <div class="btn-group" role="group" aria-label="Navigation">
+                <button type="submit" class="btn btn-primary">Add New</button>
+                <button type="submit" class="btn btn-primary">Update Selected</button>
             </div>
         </div>
     </div>
