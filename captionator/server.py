@@ -18,6 +18,7 @@ class WebUX:
     def _route(self):
         self._app.route('/', method='GET', callback=self._root)
         self._app.route('/captions.json', method='GET', callback=self._captions)
+        self._app.route('/view/<id:int>', method='GET', callback=self._view)
         self._app.route('/update/<id:int>', method='GET', callback=self._update)
         self._app.route('/update/<id:int>', method='POST', callback=self._update)
 
@@ -27,6 +28,13 @@ class WebUX:
 
     def _captions(self):
         return json.dumps(self._db.captions(views=('name', 'id', 'location')))
+
+    @view('view.j2')
+    def _view(self, id):
+        captions = self._db.captions(views=("text",), filters={"id": id})
+        if len(captions) == 1:
+            return captions[0]
+        redirect("/")
 
     @view('update.j2')
     def _update(self, id):
