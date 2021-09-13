@@ -1,6 +1,5 @@
 import argparse
 from captionator.config import Config
-from captionator.db import DB
 from captionator.server import WebUX
 
 
@@ -16,5 +15,4 @@ def parseargs():
 
 if __name__ == '__main__':
     config = Config.get() or parseargs()
-    db = DB(config)
-    WebUX(db, config).main()
+    WebUX(config).main()

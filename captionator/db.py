@@ -18,6 +18,7 @@ class DB:
             password=self._config.mysql_pass,
             database="captionator"
         )
+        self._mydb.autocommit = True
 
     def captions(self, **kwargs):
         allowed_columns = self.schema.keys()

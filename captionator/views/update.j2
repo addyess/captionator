@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
     <div class="container-fluid display-4" >
-        <form action="/update/{{ id }}" method="POST">
+        <form>
             <div class="bg-light p-5 display-1">
                 Captionator - Edit
             </div>
@@ -28,9 +28,9 @@
                   </div>
             </div>
             <div class="row">
-                <div class="btn-group btn-group-lg" role="group" aria-label="Navigation">
+                <div class="btn-group" role="group" aria-label="Navigation">
                   <button id="btn-cancel" class="btn btn-secondary">Cancel</button>
-                  <button id="btn-update" type="submit" class="btn btn-primary">Update</button>
+                  <button id="btn-update" class="btn btn-primary">Update</button>
                 </div>
             </div>
         </form>
@@ -41,6 +41,31 @@
             $(location).attr("href", "/");
             return false;
         });
+        $('#btn-update').click(function(){
+          $.ajax("/update/{{ id }}", {
+            contentType: "application/json",
+            type: "POST",
+            data: JSON.stringify($("form").serializeObject()),
+            success: function ( data ) {
+              $(location).attr("href", "/update/{{ id }}");
+            }});
+          return false;
+        });
+        $.fn.serializeObject = function() {
+           var o = {};
+           var arr = this.serializeArray();
+           $.each(arr, function() {
+               if (o[this.name]) {
+                   if (!o[this.name].push) {
+                       o[this.name] = [o[this.name]];
+                   }
+                   o[this.name].push(this.value || '');
+               } else {
+                   o[this.name] = this.value || '';
+               }
+           });
+           return o;
+        };
       })
     </script>
 {% endblock %}

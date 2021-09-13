@@ -2,27 +2,89 @@
 {% block title %}Captionator{% endblock %}
 {% block head %}
     {{ super() }}
+    <style>
+    .text-display {
+        position: relative;
+        height: 75h;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .text-display::before {
+      content: "";
+      background-image: url('/img/doofy.png');
+      background-size: cover;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      opacity: 0.10;
+    }
+
+    .slidecontainer {
+      width: 100%; /* Width of the outside container */
+    }
+
+    .slider {
+      -webkit-appearance: none;  /* Override default CSS styles */
+      appearance: none;
+      width: 100%; /* Full-width */
+      margin: 2%;
+      height: 15px;
+      border-radius: 5px;
+      background: #d3d3d3; /* Grey background */
+      outline: none; /* Remove outline */
+      opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+      -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+      transition: opacity .2s;
+    }
+
+    /* Mouse-over effects */
+    .slider:hover {
+      opacity: 1; /* Fully shown on mouse-over */
+    }
+
+    /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none; /* Override default look */
+      appearance: none;
+      width: 25px; /* Set a specific slider handle width */
+      height: 25px; /* Slider handle height */
+      border-radius: 50%;
+      background: #04AA6D; /* Green background */
+      cursor: pointer; /* Cursor on hover */
+    }
+
+    .slider::-moz-range-thumb {
+      width: 25px; /* Set a specific slider handle width */
+      height: 25px;
+      border-radius: 50%;
+      background: #04AA6D; /* Green background */
+      cursor: pointer; /* Cursor on hover */
+    }
+
+    </style>
 {% endblock %}
 {% block content %}
     <div class="container-fluid display-4" >
         <textarea id="text-source" hidden>{{ text }}</textarea>
-        <textarea class="form-control form-control-lg bg-dark text-white font-monospace"
-                  id="text-view" name="text"
-                  style="height: 1500px">
-        </textarea>
-        <div class="row">
-            <input type="range" class="form-range" id="speedRange" min="0" max="10" step="0.25" value="2.5">
+        <div class="text-display">
+            <textarea class="form-control form-control-lg bg-dark text-white font-monospace"
+                 id="text-view" style="height: 85vh"></textarea>
+        </div>
+        <div class="row slidecontainer">
             <label for="speedRange" class="form-label">Speed</label>
+            <input type="range" min="0" max="10" value="5" step="0.25" class="slider" id="speedRange">
         </div>
         <div class="row">
           <button id="btn-back" class="btn btn-secondary">Back</button>
         </div>
     </div>
     <script>
-      var slice_len = 15;
-      var refresh
-
       function addContent(idx){
+          var slice_len = 20;
           var addition = $('#text-source').val().substr(idx,slice_len);
           var textarea = $('#text-view').get(0);
           textarea.value += addition;
@@ -32,6 +94,7 @@
           idx += slice_len;
           return idx;
       }
+
       $(function() {
         $('#btn-back').click(function(){
             $(location).attr("href", "/");
@@ -40,7 +103,7 @@
 
         var idx = 0;
         var speed = 250;
-        var max_timeout = 1000;
+        var max_timeout = 1100;
         var timer = null;
 
         $('#speedRange').change(function(){
