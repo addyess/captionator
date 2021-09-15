@@ -28,6 +28,13 @@ class DB:
             for r in fetched
         ]
 
+    def create_captions(self, values):
+        valid_to_set = set(self.schema.keys()) - {"id"}
+        settable = {k: values.get(k) for k in valid_to_set if values.get(k)}
+        if settable:
+            return self._create("captions", **settable)
+        raise ValueError("No settable values available")
+
     def set_captions(self, rid, values):
         valid_to_set = set(self.schema.keys()) - {"id"}
         settable = {k: values.get(k) for k in valid_to_set if values.get(k)}
@@ -54,3 +61,12 @@ class DB:
         settings = "SET " + ", ".join(f"{col} = %({col})s" for col in settable)
         cursor = self._mydb.cursor()
         cursor.execute(f"UPDATE {table} {settings} where id = {rid}", settable)
+
+    def _create(self, table, **settable):
+        keys, values = zip(*settable.items())
+        keys_str = ", ".join(keys)
+        value_str = ", ".join("%s" for col in values)
+        cursor = self._mydb.cursor()
+        insert_stmt = f"INSERT INTO {table} ({keys_str}) VALUES ({value_str})"
+        cursor.execute(insert_stmt, values)
+        return cursor.lastrowid

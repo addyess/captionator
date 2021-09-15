@@ -8,7 +8,6 @@ def parseargs():
     parser.add_argument("--mysql_host", default="localhost")
     parser.add_argument("--mysql_user", default="username")
     parser.add_argument("--mysql_pass", default="password")
-
     parser.add_argument("--http_port", default=8080)
     return parser.parse_args()
 
