@@ -1,5 +1,7 @@
+from contextlib import contextmanager
 import json
-import pathlib
+from pathlib import Path
+import tempfile
 from bottle import Bottle, run, request, redirect, response, static_file
 from bottle import jinja2_view as view
 from bottle import TEMPLATE_PATH
@@ -7,16 +9,25 @@ from bottle import TEMPLATE_PATH
 from captionator.db import DB
 
 
-VIEW_PATH = pathlib.Path(__file__).parent / "views"
+VIEW_PATH = Path(__file__).parent / "views"
 IMG_PATH = VIEW_PATH / "img"
 JS_PATH = VIEW_PATH / "js"
 TEMPLATE_PATH.insert(0, VIEW_PATH)
 
 
+@contextmanager
+def _save_files(files):
+    with tempfile.TemporaryDirectory() as tmpfs:
+        for file in files:
+            file.save(tmpfs)
+        yield [Path(tmpfs) / file.filename for file in files]
+
+
 class WebUX:
-    def __init__(self, config):
+    def __init__(self, config, ocr):
         self._app = Bottle()
         self._config = config
+        self._ocr = ocr
         self._route()
 
     def _route(self):
@@ -26,7 +37,7 @@ class WebUX:
         self._app.route('/captions.json', method='GET', callback=self._captions)
         self._app.route('/view/<id:int>', method='GET', callback=self._view)
         self._app.route('/add', method='GET', callback=self._add)
-        self._app.route('/add', method='POST', callback=self._add_json)
+        self._app.route('/add', method='POST', callback=self._add_post)
         self._app.route('/update/<id:int>', method='GET', callback=self._update)
         self._app.route('/update/<id:int>', method='POST', callback=self._update_json)
 
@@ -43,6 +54,19 @@ class WebUX:
     @view('add.j2')
     def _add(self):
         return dict()
+
+    def _add_post(self):
+        form = request.forms
+        files = request.files.getall('image')
+        if files:
+            with _save_files(files) as paths:
+                form['text'] = self._ocr(paths).as_text()
+        if 'text' in form:
+            db = DB(self._config)
+            id = db.create_captions(form)
+            return {"status": "updated", "id": id}
+        response.status = 400
+        return response
 
     @view('view.j2')
     def _view(self, id):
@@ -68,14 +92,6 @@ class WebUX:
         if request.json:
             db = DB(self._config)
             db.set_captions(id, request.json)
-            return {"status": "updated", "id": id}
-        response.status = 400
-        return response
-
-    def _add_json(self):
-        if request.json:
-            db = DB(self._config)
-            id = db.create_captions(request.json)
             return {"status": "updated", "id": id}
         response.status = 400
         return response

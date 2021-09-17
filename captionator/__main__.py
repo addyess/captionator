@@ -1,6 +1,7 @@
 import argparse
 from captionator.config import Config
 from captionator.server import WebUX
+from captionator.ocr import OCR
 
 
 def parseargs():
@@ -14,4 +15,4 @@ def parseargs():
 
 if __name__ == '__main__':
     config = Config.get() or parseargs()
-    WebUX(config).main()
+    WebUX(config, OCR).main()

@@ -33,9 +33,11 @@
          files.forEach(file => formData.append("image", file));
       }
       $.ajax("/add", {
-        contentType: "application/json",
+        contentType: false,
+        processData: false,
+        cache: false,
         type: "POST",
-        data: JSON.stringify(),
+        data: formData,
         success: function ( data ) {
           $(location).attr("href", "/update/" + data.id);
         }});
