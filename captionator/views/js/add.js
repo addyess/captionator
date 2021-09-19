@@ -22,6 +22,10 @@
     });
 
     $('form').submit(function(e){
+      $('#btn-add')
+         .prop("disabled", true)
+         .addClass("btn-secondary").removeClass('btn-primary')
+         .find(".spinner-border").removeClass('d-none');
       e.preventDefault();
       var formData = new FormData(this)
       if (formData.get('text') == ""){
@@ -40,7 +44,14 @@
         data: formData,
         success: function ( data ) {
           $(location).attr("href", "/update/" + data.id);
-        }});
+        },
+        error: function( ) {
+          $('#btn-add')
+           .prop("disabled", false)
+           .addClass("btn-primary").removeClass('btn-secondary')
+           .find(".spinner-border").addClass('d-none');
+        }
+        });
       return false;
     });
 

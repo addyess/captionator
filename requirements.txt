@@ -1,5 +1,6 @@
-opencv-python
-pytesseract
+# opencv-python
+# pytesseract
+google-cloud-vision
 mysql-connector-python
 bottle
 jinja2

@@ -1,7 +1,8 @@
 import argparse
+from pathlib import Path
 from captionator.config import Config
 from captionator.server import WebUX
-from captionator.ocr import OCR
+from captionator.google_ocr import OCR
 
 
 def parseargs():
@@ -10,6 +11,7 @@ def parseargs():
     parser.add_argument("--mysql_user", default="username")
     parser.add_argument("--mysql_pass", default="password")
     parser.add_argument("--http_port", default=8080)
+    parser.add_argument("--google_keydir", default="keys")
     return parser.parse_args()
 
 

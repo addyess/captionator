@@ -40,6 +40,7 @@ class WebUX:
         self._app.route('/add', method='POST', callback=self._add_post)
         self._app.route('/update/<id:int>', method='GET', callback=self._update)
         self._app.route('/update/<id:int>', method='POST', callback=self._update_json)
+        self._app.route('/update/<rid:int>', method='DELETE', callback=self._delete)
 
     def _static_img(self, filename):
         return static_file(filename, root=IMG_PATH)
@@ -60,7 +61,7 @@ class WebUX:
         files = request.files.getall('image')
         if files:
             with _save_files(files) as paths:
-                form['text'] = self._ocr(paths).as_text()
+                form['text'] = self._ocr(self._config, paths).as_text()
         if 'text' in form:
             db = DB(self._config)
             id = db.create_captions(form)
@@ -74,6 +75,11 @@ class WebUX:
         captions = db.captions(views=("text",), filters={"id": id})
         if len(captions) == 1:
             return captions[0]
+        redirect("/")
+
+    def _delete(self, rid):
+        db = DB(self._config)
+        captions = db.del_captions(rid)
         redirect("/")
 
     @view('update.j2')

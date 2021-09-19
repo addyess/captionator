@@ -5,7 +5,7 @@ import numpy as np
 
 
 class OCR:
-    def __init__(self, files):
+    def __init__(self, _config, files):
         self._paths = files
 
     def as_text(self):
@@ -59,5 +59,4 @@ class OCR:
 
 
 if __name__ == "__main__":
-    import sys
-    print(OCR(sys.argv).as_text())
+    print(OCR(None, ["test.png"]).as_text())

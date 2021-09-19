@@ -32,38 +32,12 @@
         </div>
         <div class="row fs-1">
             <div class="btn-group" role="group" aria-label="Navigation">
-                <button id="btn-add" class="btn btn-outline-primary">Add New</button>
-                <button id="btn-view" class="btn btn-primary">View Selected</button>
-                <button id="btn-update" class="btn btn-outline-primary">Update Selected</button>
+                <button id="btn-add" class="btn btn-outline-primary">Add</button>
+                <button id="btn-view" class="btn btn-primary">View</button>
+                <button id="btn-update" class="btn btn-outline-primary">Update</button>
+                <button id="btn-delete" class="btn btn-outline-primary">Delete</button>
             </div>
         </div>
     </div>
-    <script>
-      var $table = $('#table')
-
-      $(function() {
-        $table.bootstrapTable();
-        $('#btn-add').click(add);
-        $('#btn-view').click(view);
-        $('#btn-update').click(update);
-      })
-
-      function add(){
-          $(location).attr("href", "/add");
-      }
-
-      function view(){
-          var selected = $('.selected').find('[name="id"]');
-          if (selected.length == 1){
-              $(location).attr("href", "/view/" + selected.attr('value'));
-          }
-      }
-
-      function update(){
-          var selected = $('.selected').find('[name="id"]');
-          if (selected.length == 1){
-              $(location).attr("href", "/update/" + selected.attr('value'));
-          }
-      }
-    </script>
+    <script src="js/root.js"></script>
 {% endblock %}

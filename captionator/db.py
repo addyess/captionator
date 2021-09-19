@@ -41,6 +41,9 @@ class DB:
         if settable:
             self._set("captions", rid, **settable)
 
+    def del_captions(self, rid):
+        self._delete("captions", rid)
+
     def _get(self, table, allowed_columns, views=None, filters=None):
         select, where = "*", ""
         if views and all(v.lower() in allowed_columns for v in views):
@@ -57,10 +60,16 @@ class DB:
         cursor.execute(statement, params=filters)
         return views, cursor.fetchall()
 
+    def _delete(self, table, rid):
+        cursor = self._mydb.cursor()
+        where = {'id': rid}
+        cursor.execute(f"DELETE from {table} where id = %(id)s", where)
+
     def _set(self, table, rid, **settable):
+        settable['id'] = rid
         settings = "SET " + ", ".join(f"{col} = %({col})s" for col in settable)
         cursor = self._mydb.cursor()
-        cursor.execute(f"UPDATE {table} {settings} where id = {rid}", settable)
+        cursor.execute(f"UPDATE {table} {settings} where id = %(id)s", settable)
 
     def _create(self, table, **settable):
         keys, values = zip(*settable.items())

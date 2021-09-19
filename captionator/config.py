@@ -39,3 +39,7 @@ class Config:
     @property
     def mysql_pass(self):
         return self._reader['mysql']['pass']
+
+    @property
+    def google_keydir(self):
+        return self._reader['google']['keydir']
