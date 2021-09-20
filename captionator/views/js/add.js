@@ -22,11 +22,11 @@
     });
 
     $('form').submit(function(e){
+      e.preventDefault();
       $('#btn-add')
          .prop("disabled", true)
          .addClass("btn-secondary").removeClass('btn-primary')
          .find(".spinner-border").removeClass('d-none');
-      e.preventDefault();
       var formData = new FormData(this)
       if (formData.get('text') == ""){
         formData.delete('text');

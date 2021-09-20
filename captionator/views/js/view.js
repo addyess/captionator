@@ -1,14 +1,18 @@
 function addContent(idx){
-    var slice_len = 40;
+    var slice_len = 20;
     var source = $('#text-source').val();
-    var selection = source.substr(idx,slice_len);
-    var words = selection.split(' ');
-    if (source.length > idx + selection.length){
-        words.pop();
+    var addition = source.substr(idx,slice_len);
+    if (source.length > idx + addition.length){
+        var chop_len = addition
+            .split('')
+            .reverse()
+            .join('')
+            .split(/\s/)[0]
+            .length;
+        addition = addition.slice(0, addition.length - chop_len);
     }
 
     var textarea = $('#text-view').get(0);
-    var addition = words.join(" ");
     textarea.value += addition;
     if (textarea.selectionStart == textarea.selectionEnd) {
         textarea.scrollTop = textarea.scrollHeight;
@@ -38,7 +42,6 @@ $(function() {
         .attr('max', MAX_SPEED)
         .change(function(){
             speed = $(this).val();
-            updateTick();
         });
     function updateTick() {
         idx = addContent(idx);
