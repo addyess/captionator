@@ -12,10 +12,13 @@
          .find(".spinner-border").removeClass('d-none');
       var id = $('#id').val();
       var url = "/update/" + id;
+      var formData = new FormData(this)
       $.ajax(url, {
-        contentType: "application/json",
+        contentType: false,
+        processData: false,
+        cache: false,
         type: "POST",
-        data: JSON.stringify($("form").serializeObject()),
+        data: formData,
         complete: function( ) {
           btn_update
            .prop("disabled", false)
@@ -25,19 +28,4 @@
       });
       return false;
     });
-    $.fn.serializeObject = function() {
-       var o = {};
-       var arr = this.serializeArray();
-       $.each(arr, function() {
-           if (o[this.name]) {
-               if (!o[this.name].push) {
-                   o[this.name] = [o[this.name]];
-               }
-               o[this.name].push(this.value || '');
-           } else {
-               o[this.name] = this.value || '';
-           }
-       });
-       return o;
-    };
   })

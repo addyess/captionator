@@ -9,14 +9,23 @@
             <h1> Captionator </h1>
         </div>
         <div id="captions" class="fs-1">
+            <div class="btn-toolbar justify-content-between" role="toolbar">
+                <span class="btn-group col-6" role="group" >
+                    <button id="btn-add" class="btn btn-primary">Add</button>
+                    <button id="btn-view" class="btn btn-success">View</button>
+                    <button id="btn-update" class="btn btn-warning">Update</button>
+                    <button id="btn-delete" class="btn btn-danger">Delete</button>
+                </span>
+                <span class="buttons-toolbar col-6" ></span>
+            </div>
             <table
               data-toggle="table"
-              data-pagination="true"
               data-search="true"
+              data-buttons-toolbar=".buttons-toolbar"
+              data-pagination="true"
               data-single-select="true"
               data-id-field="id"
               data-select-item-name="id"
-              data-height="1250"
               data-click-to-select="true"
               data-url="/captions.json"
             >
@@ -31,12 +40,6 @@
             </table>
         </div>
         <div class="row fs-1">
-            <div class="btn-group" role="group" aria-label="Navigation">
-                <button id="btn-add" class="btn btn-outline-primary">Add</button>
-                <button id="btn-view" class="btn btn-primary">View</button>
-                <button id="btn-update" class="btn btn-outline-primary">Update</button>
-                <button id="btn-delete" class="btn btn-outline-primary">Delete</button>
-            </div>
         </div>
     </div>
     <script src="js/root.js"></script>

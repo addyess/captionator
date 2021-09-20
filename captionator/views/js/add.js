@@ -20,10 +20,10 @@
         $(location).attr("href", "/");
         return false;
     });
-
     $('form').submit(function(e){
       e.preventDefault();
-      $('#btn-add')
+      var btn_add = $('#btn-add');
+      btn_add
          .prop("disabled", true)
          .addClass("btn-secondary").removeClass('btn-primary')
          .find(".spinner-border").removeClass('d-none');

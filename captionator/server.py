@@ -95,9 +95,10 @@ class WebUX:
         return json.dumps(db.captions(views=('name', 'id', 'location')))
 
     def _update_json(self, id):
-        if request.json:
+        form = request.forms
+        if form:
             db = DB(self._config)
-            db.set_captions(id, request.json)
+            db.set_captions(id, form)
             return {"status": "updated", "id": id}
         response.status = 400
         return response
