@@ -31,16 +31,16 @@ class WebUX:
         self._route()
 
     def _route(self):
-        self._app.route('/', method='GET', callback=self._root)
-        self._app.route('/img/<filename>', callback=self._static_img)
-        self._app.route('/js/<filename>', callback=self._static_js)
-        self._app.route('/captions.json', method='GET', callback=self._captions)
-        self._app.route('/view/<id:int>', method='GET', callback=self._view)
-        self._app.route('/add', method='GET', callback=self._add)
-        self._app.route('/add', method='POST', callback=self._add_post)
-        self._app.route('/update/<id:int>', method='GET', callback=self._update)
-        self._app.route('/update/<id:int>', method='POST', callback=self._update_json)
-        self._app.route('/update/<rid:int>', method='DELETE', callback=self._delete)
+        self._app.route("/", method="GET", callback=self._root)
+        self._app.route("/img/<filename>", callback=self._static_img)
+        self._app.route("/js/<filename>", callback=self._static_js)
+        self._app.route("/captions.json", method="GET", callback=self._captions)
+        self._app.route("/view/<id:int>", method="GET", callback=self._view)
+        self._app.route("/add", method="GET", callback=self._add)
+        self._app.route("/add", method="POST", callback=self._add_post)
+        self._app.route("/update/<id:int>", method="GET", callback=self._update)
+        self._app.route("/update/<id:int>", method="POST", callback=self._update_json)
+        self._app.route("/update/<rid:int>", method="DELETE", callback=self._delete)
 
     def _static_img(self, filename):
         return static_file(filename, root=IMG_PATH)
@@ -48,28 +48,28 @@ class WebUX:
     def _static_js(self, filename):
         return static_file(filename, root=JS_PATH)
 
-    @view('root.j2')
+    @view("root.j2")
     def _root(self):
         return dict()
 
-    @view('add.j2')
+    @view("add.j2")
     def _add(self):
         return dict()
 
     def _add_post(self):
         form = request.forms
-        files = request.files.getall('image')
+        files = request.files.getall("image")
         if files:
             with _save_files(files) as paths:
-                form['text'] = self._ocr(self._config, paths).as_text()
-        if 'text' in form:
+                form["text"] = self._ocr(self._config, paths).as_text()
+        if "text" in form:
             db = DB(self._config)
             id = db.create_captions(form)
             return {"status": "updated", "id": id}
         response.status = 400
         return response
 
-    @view('view.j2')
+    @view("view.j2")
     def _view(self, id):
         db = DB(self._config)
         captions = db.captions(views=("text",), filters={"id": id})
@@ -82,7 +82,7 @@ class WebUX:
         captions = db.del_captions(rid)
         redirect("/")
 
-    @view('update.j2')
+    @view("update.j2")
     def _update(self, id):
         db = DB(self._config)
         captions = db.captions(filters={"id": id})
@@ -92,7 +92,7 @@ class WebUX:
 
     def _captions(self):
         db = DB(self._config)
-        return json.dumps(db.captions(views=('name', 'id', 'location')))
+        return json.dumps(db.captions(views=("name", "id", "location")))
 
     def _update_json(self, id):
         form = request.forms
@@ -104,4 +104,4 @@ class WebUX:
         return response
 
     def main(self):
-        run(self._app, host='0.0.0.0', port=self._config.http_port)
+        run(self._app, host="0.0.0.0", port=self._config.http_port)

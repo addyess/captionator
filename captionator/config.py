@@ -26,20 +26,20 @@ class Config:
 
     @property
     def http_port(self):
-        return self._reader['DEFAULT']['port']
+        return self._reader["DEFAULT"]["port"]
 
     @property
     def mysql_host(self):
-        return self._reader['mysql']['host']
+        return self._reader["mysql"]["host"]
 
     @property
     def mysql_user(self):
-        return self._reader['mysql']['user']
+        return self._reader["mysql"]["user"]
 
     @property
     def mysql_pass(self):
-        return self._reader['mysql']['pass']
+        return self._reader["mysql"]["pass"]
 
     @property
     def google_keydir(self):
-        return self._reader['google']['keydir']
+        return self._reader["google"]["keydir"]

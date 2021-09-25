@@ -1,5 +1,4 @@
 import argparse
-from pathlib import Path
 from captionator.config import Config
 from captionator.server import WebUX
 from captionator.google_ocr import OCR
@@ -15,6 +14,6 @@ def parseargs():
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
     config = Config.get() or parseargs()
     WebUX(config, OCR).main()

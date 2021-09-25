@@ -9,9 +9,10 @@ class OCR:
         self._paths = files
 
     def as_text(self):
-        return '/n'.join(
-            self._convert_one(path) for path in map(Path, self._paths)
-            if path.exists() and (path.match('*.png') or path.match('*.jpg'))
+        return "/n".join(
+            self._convert_one(path)
+            for path in map(Path, self._paths)
+            if path.exists() and (path.match("*.png") or path.match("*.jpg"))
         )
 
     @staticmethod
@@ -53,7 +54,7 @@ class OCR:
         opening = self._erode(bit_not)
         canny = self._dilate(opening)
 
-        custom_config = r'-l eng --psm 6'
+        custom_config = r"-l eng --psm 6"
         out_below = pytesseract.image_to_string(gray, config=custom_config)
         return out_below
 

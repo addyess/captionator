@@ -7,7 +7,7 @@ class DB:
         id="INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
         name="VARCHAR(255)",
         text="TEXT",
-        location="Undefined"
+        location="Undefined",
     )
 
     def __init__(self, config):
@@ -16,17 +16,14 @@ class DB:
             host=self._config.mysql_host,
             user=self._config.mysql_user,
             password=self._config.mysql_pass,
-            database="captionator"
+            database="captionator",
         )
         self._mydb.autocommit = True
 
     def captions(self, **kwargs):
         allowed_columns = self.schema.keys()
-        returned_columns, fetched = self._get('captions', allowed_columns, **kwargs)
-        return [
-            {returned_columns[i]: v for i, v in enumerate(r)}
-            for r in fetched
-        ]
+        returned_columns, fetched = self._get("captions", allowed_columns, **kwargs)
+        return [{returned_columns[i]: v for i, v in enumerate(r)} for r in fetched]
 
     def create_captions(self, values):
         valid_to_set = set(self.schema.keys()) - {"id"}
@@ -51,10 +48,7 @@ class DB:
         else:
             views = list(allowed_columns)
         if filters and all(f.lower() in allowed_columns for f in filters):
-            where = " WHERE " + " AND ".join(
-                f"{col} = %({col})s"
-                for col in filters
-            )
+            where = " WHERE " + " AND ".join(f"{col} = %({col})s" for col in filters)
         cursor = self._mydb.cursor()
         statement = f"SELECT {select} FROM {table}{where}"
         cursor.execute(statement, params=filters)
@@ -62,11 +56,11 @@ class DB:
 
     def _delete(self, table, rid):
         cursor = self._mydb.cursor()
-        where = {'id': rid}
+        where = {"id": rid}
         cursor.execute(f"DELETE from {table} where id = %(id)s", where)
 
     def _set(self, table, rid, **settable):
-        settable['id'] = rid
+        settable["id"] = rid
         settings = "SET " + ", ".join(f"{col} = %({col})s" for col in settable)
         cursor = self._mydb.cursor()
         cursor.execute(f"UPDATE {table} {settings} where id = %(id)s", settable)
