@@ -9,7 +9,9 @@ function addContent(idx){
             .join('')
             .split(/\s/)[0]
             .length;
-        addition = addition.slice(0, addition.length - chop_len);
+        if (chop_len < slice_len){
+            addition = addition.slice(0, addition.length - chop_len);
+        }
     }
 
     var textarea = $('#text-view').get(0);

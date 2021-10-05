@@ -17,3 +17,6 @@ def parseargs():
 def main():
     config = Config.get() or parseargs()
     WebUX(config, OCR).main()
+
+if __name__ == "__main__":
+    main()

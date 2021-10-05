@@ -1,5 +1,5 @@
 __pycache__/
-keys/
+keys/*.json
 venv
 captionator.ini
 *.egg-info
