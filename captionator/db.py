@@ -1,5 +1,13 @@
 import mysql.connector
-from collections import namedtuple, OrderedDict
+import mysql.connector.errors
+
+from collections import OrderedDict
+
+from captionator.memory_db import MemDB
+
+
+class DBAccessError(Exception):
+    """Custom Error for DB Errors"""
 
 
 class DB:
@@ -12,13 +20,17 @@ class DB:
 
     def __init__(self, config):
         self._config = config
-        self._mydb = mysql.connector.connect(
-            host=self._config.mysql_host,
-            user=self._config.mysql_user,
-            password=self._config.mysql_pass,
-            database="captionator",
-        )
-        self._mydb.autocommit = True
+        self._mydb, self._memdb = None, None
+        try:
+            self._mydb = mysql.connector.connect(
+                host=self._config.mysql_host,
+                user=self._config.mysql_user,
+                password=self._config.mysql_pass,
+                database="captionator",
+            )
+            self._mydb.autocommit = True
+        except mysql.connector.errors.DatabaseError:
+            self._memdb = MemDB()
 
     def captions(self, **kwargs):
         allowed_columns = self.schema.keys()
@@ -42,34 +54,46 @@ class DB:
         self._delete("captions", rid)
 
     def _get(self, table, allowed_columns, views=None, filters=None):
-        select, where = "*", ""
-        if views and all(v.lower() in allowed_columns for v in views):
-            select = ", ".join(views)
-        else:
-            views = list(allowed_columns)
-        if filters and all(f.lower() in allowed_columns for f in filters):
-            where = " WHERE " + " AND ".join(f"{col} = %({col})s" for col in filters)
-        cursor = self._mydb.cursor()
-        statement = f"SELECT {select} FROM {table}{where}"
-        cursor.execute(statement, params=filters)
-        return views, cursor.fetchall()
+        if self._mydb:
+            select, where = "*", ""
+            if views and all(v.lower() in allowed_columns for v in views):
+                select = ", ".join(views)
+            else:
+                views = list(allowed_columns)
+            if filters and all(f.lower() in allowed_columns for f in filters):
+                where = " WHERE " + " AND ".join(f"{col} = %({col})s" for col in filters)
+            cursor = self._mydb.cursor()
+            statement = f"SELECT {select} FROM {table}{where}"
+            cursor.execute(statement, params=filters)
+            return views, cursor.fetchall()
+        if self._memdb:
+            return self._memdb._get(table, allowed_columns, views=views, filters=filters)
 
     def _delete(self, table, rid):
-        cursor = self._mydb.cursor()
-        where = {"id": rid}
-        cursor.execute(f"DELETE from {table} where id = %(id)s", where)
+        if self._mydb:
+            cursor = self._mydb.cursor()
+            where = {"id": rid}
+            cursor.execute(f"DELETE from {table} where id = %(id)s", where)
+        elif self._memdb:
+            return self._memdb._delete(table, rid)
 
     def _set(self, table, rid, **settable):
-        settable["id"] = rid
-        settings = "SET " + ", ".join(f"{col} = %({col})s" for col in settable)
-        cursor = self._mydb.cursor()
-        cursor.execute(f"UPDATE {table} {settings} where id = %(id)s", settable)
+        if self._mydb:
+            settable["id"] = rid
+            settings = "SET " + ", ".join(f"{col} = %({col})s" for col in settable)
+            cursor = self._mydb.cursor()
+            cursor.execute(f"UPDATE {table} {settings} where id = %(id)s", settable)
+        elif self._memdb:
+            self._memdb._set(table, rid, **settable)
 
     def _create(self, table, **settable):
-        keys, values = zip(*settable.items())
-        keys_str = ", ".join(keys)
-        value_str = ", ".join("%s" for col in values)
-        cursor = self._mydb.cursor()
-        insert_stmt = f"INSERT INTO {table} ({keys_str}) VALUES ({value_str})"
-        cursor.execute(insert_stmt, values)
-        return cursor.lastrowid
+        if self._mydb:
+            keys, values = zip(*settable.items())
+            keys_str = ", ".join(keys)
+            value_str = ", ".join("%s" for col in values)
+            cursor = self._mydb.cursor()
+            insert_stmt = f"INSERT INTO {table} ({keys_str}) VALUES ({value_str})"
+            cursor.execute(insert_stmt, values)
+            return cursor.lastrowid
+        elif self._memdb:
+            return self._memdb._create(table, **settable)
