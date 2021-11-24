@@ -1,9 +1,13 @@
 from collections import defaultdict
-from uuid import uuid4
 
 
 class MemDB:
     _storage = defaultdict(dict)
+    _storage['captions'][0] = dict(
+        name="Sample Name",
+        location="Sample, CA",
+        text="Multiline-text-is-important with spaces and 5ymbol$\n" * 500
+    )
 
     def _get(self, table, allowed_columns, views=None, filters=None):
         if not views or not all(v.lower() in allowed_columns for v in views):
