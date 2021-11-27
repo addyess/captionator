@@ -56,14 +56,10 @@ $(function() {
             timer = setTimeout(updateTick, timeout);
         }
     }
-    $('#pause').click(function(){
-        paused = !paused;
-        $(this).children().fadeToggle(200);
-        updateTick();
-    })
-    $('#scrolling').click(function(){
-        paused = $(this).is(":checked");
-        if ( paused ){
+
+    function manage_display(val) {
+        paused = val != 'auto';
+        if ( val == "full" ){
             $('#text-source').show();
             $('#text-view').hide();
         } else {
@@ -71,8 +67,10 @@ $(function() {
             $('#text-view').show();
         }
         updateTick();
+    }
+
+    $('input[name=display]').click(function(){
+        manage_display($(this).val())
     });
-
-
-    updateTick();
+    manage_display($('input[name=display]:checked').val());
 })

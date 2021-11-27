@@ -86,19 +86,21 @@
         </div>
 
         <div class="row">
-            <div class="col-1 form-check form-switch">
-               <input class="form-check-input" type="checkbox" id="scrolling" style="background-color: #04AA6D">
+            <div class="btn-group">
+                    <input type="radio" class="btn-check" name="display" id="full" autocomplete="off" value="full" checked>
+                    <label class="btn btn-outline-success" for="full">Full Text</label>
+
+                    <input type="radio" class="btn-check" name="display" id="auto" autocomplete="off" value="auto" >
+                    <label class="btn btn-outline-success" for="auto">Auto</label>
+
+                    <input type="radio" class="btn-check" name="display" id="pause" autocomplete="off" value="pause">
+                    <label class="btn btn-outline-success" for="pause">Paused</label>
             </div>
-            <div class="col-1 fa-stack" id="pause" style="color: #04AA6D">
-                <i class="fa fa-square fa-stack-2x" style="display: none"></i>
-                <i class="fa fa-pause-circle fa-stack-1x fa-inverse" style="display: none"></i>
-                <i class="fa fa-square-o fa-stack-2x"></i>
-                <i class="fa fa-pause-circle fa-stack-1x"></i>
-            </div>
-            <div class="col-8">
-                <input type="range" step="0.25" class="slider" id="speedRange">
-            </div>
+
+            <label for="speedRange">Speed</label>
+            <input type="range" step="0.25" class="slider" id="speedRange" min="0" max="10">
         </div>
+
         <div class="row">
           <button id="btn-back" class="btn btn-secondary">Back</button>
         </div>
