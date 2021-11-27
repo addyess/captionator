@@ -12,7 +12,12 @@
       position: relative;
       width: 100%;
       display: flex;
-      justify-content: center;
+      justify-content: left;
+      white-space: pre-wrap;
+      white-space: -moz-pre-wrap;
+      white-space: -pre-wrap;
+      white-space: -o-pre-wrap;
+      word-wrap: break-word;
     }
     .text-display::before {
       content: "";
@@ -75,7 +80,7 @@
     <div class="container-fluid display-4" >
         <div class="row text-height">
             <pre class="bg-dark text-white font-monospace text-display"
-                 id="text-source" style="display: none;">{{ text }}</pre>
+                 id="text-source" style="display: none;">{{ text | e }}</pre>
             <pre class="bg-dark text-white font-monospace text-display"
                  id="text-view"></pre>
         </div>
