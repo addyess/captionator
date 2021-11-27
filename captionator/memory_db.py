@@ -6,7 +6,7 @@ class MemDB:
     _storage['captions'][0] = dict(
         name="Sample Name",
         location="Sample, CA",
-        text="Multiline-text-is-important with spaces and 5ymbol$\n" * 500
+        text="\n".join(f"{line}: Multiline-text-is-important with spaces and 5ymbol$" for line in range(500))
     )
 
     def _get(self, table, allowed_columns, views=None, filters=None):

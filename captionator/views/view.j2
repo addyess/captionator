@@ -3,18 +3,22 @@
 {% block head %}
     {{ super() }}
     <style>
+    .text-height {
+        height: 85vh;
+        overflow-y: auto;
+    }
+
     .text-display {
-        position: relative;
-        height: 75h;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
     }
     .text-display::before {
       content: "";
       background-image: url('/img/doofy.png');
       background-size: cover;
+      background-attachment: fixed;
       position: absolute;
       top: 0px;
       right: 0px;
@@ -69,19 +73,24 @@
 {% endblock %}
 {% block content %}
     <div class="container-fluid display-4" >
-        <textarea id="text-source" hidden>{{ text }}</textarea>
-        <div class="row text-display">
-            <textarea class="form-control form-control-lg bg-dark text-white font-monospace"
-                 id="text-view" style="height: 85vh" readonly></textarea>
+        <div class="row text-height">
+            <pre class="bg-dark text-white font-monospace text-display"
+                 id="text-source" style="display: none;">{{ text }}</pre>
+            <pre class="bg-dark text-white font-monospace text-display"
+                 id="text-view"></pre>
         </div>
+
         <div class="row">
+            <div class="col-1 form-check form-switch">
+               <input class="form-check-input" type="checkbox" id="scrolling" style="background-color: #04AA6D">
+            </div>
             <div class="col-1 fa-stack" id="pause" style="color: #04AA6D">
                 <i class="fa fa-square fa-stack-2x" style="display: none"></i>
                 <i class="fa fa-pause-circle fa-stack-1x fa-inverse" style="display: none"></i>
                 <i class="fa fa-square-o fa-stack-2x"></i>
                 <i class="fa fa-pause-circle fa-stack-1x"></i>
             </div>
-            <div class="col-10">
+            <div class="col-9">
                 <input type="range" step="0.25" class="slider" id="speedRange">
             </div>
         </div>

@@ -1,6 +1,6 @@
 function addContent(idx){
     var slice_len = 20;
-    var source = $('#text-source').val();
+    var source = $('#text-source').html();
     var addition = source.substr(idx,slice_len);
     if (source.length > idx + addition.length){
         var chop_len = addition
@@ -14,12 +14,10 @@ function addContent(idx){
         }
     }
 
-    var textarea = $('#text-view').get(0);
-    textarea.value += addition;
-    if (textarea.selectionStart == textarea.selectionEnd) {
-        textarea.scrollTop = textarea.scrollHeight;
-    }
+    $('#text-view').append(addition);
     idx += addition.length;
+    var view = $('.text-height');
+    view.scrollTop(view.prop('scrollHeight'));
     return idx;
 }
 
@@ -46,7 +44,9 @@ $(function() {
             speed = $(this).val();
         });
     function updateTick() {
-        idx = addContent(idx);
+        if (!paused) {
+            idx = addContent(idx);
+        }
         if (timer != null) {
             clearTimeout(timer);
             timer = null;
@@ -61,5 +61,18 @@ $(function() {
         $(this).children().fadeToggle(200);
         updateTick();
     })
+    $('#scrolling').click(function(){
+        paused = $(this).is(":checked");
+        if ( paused ){
+            $('#text-source').show();
+            $('#text-view').hide();
+        } else {
+            $('#text-source').hide();
+            $('#text-view').show();
+        }
+        updateTick();
+    });
+
+
     updateTick();
 })
